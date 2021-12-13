@@ -1,5 +1,5 @@
 INSERT INTO cliente (DNI,nombre,apellido,email,create_at) VALUES (41801836,'Ramiro','Garcia Orsi','ramiro@gmail.com','2021-08-16')
-INSERT INTO cliente (DNI,nombre,apellido,email,create_at) VALUES (56726723,'Gustavo','Lopez','gustavo@gmail.com','2021-08-14')
+    INSERT INTO cliente (DNI,nombre,apellido,email,create_at) VALUES (56726723,'Gustavo','Lopez','gustavo@gmail.com','2021-08-14')
 INSERT INTO cliente (DNI,nombre, apellido, email, create_at) VALUES(90834562,'Andres', 'Guzman', 'profesor@bolsadeideas.com', '2017-08-01');
 INSERT INTO cliente (DNI,nombre, apellido, email, create_at) VALUES(82187640,'John', 'Doe', 'john.doe@gmail.com', '2017-08-02');
 INSERT INTO cliente (DNI,nombre, apellido, email, create_at) VALUES(12048760,'Linus', 'Torvalds', 'linus.torvalds@gmail.com', '2017-08-03');

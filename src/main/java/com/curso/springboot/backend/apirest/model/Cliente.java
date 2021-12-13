@@ -1,5 +1,8 @@
 package com.curso.springboot.backend.apirest.model;
 
+import com.sun.istack.NotNull;
+
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,10 +15,13 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
-
-    private int dni;
+    @Column(nullable = false,unique = true)
+    private Integer dni;
+    @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private String apellido;
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Column(name = "create_at")
@@ -35,11 +41,11 @@ public class Cliente {
         this.id = id;
     }
 
-    public int getDni() {
+    public Integer getDni() {
         return dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(Integer dni) {
         this.dni = dni;
     }
 
