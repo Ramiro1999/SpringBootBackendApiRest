@@ -1,9 +1,8 @@
 package com.curso.springboot.backend.apirest.model;
 
-import com.sun.istack.NotNull;
-
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 
@@ -15,12 +14,23 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
+
+    @Min(8)
+    @NotNull(message = "es obligatorio")
     @Column(nullable = false,unique = true)
     private Integer dni;
+
+    @NotEmpty(message = "es obligatorio")
     @Column(nullable = false)
+    @Size(min = 4, max = 13,message = "tiene que tener entre 4 y 13 caracteres")
     private String nombre;
+
+    @NotEmpty(message = "es obligatorio")
     @Column(nullable = false)
     private String apellido;
+
+    @NotEmpty(message = "es obligatorio")
+    @Email
     @Column(nullable = false,unique = true)
     private String email;
 

@@ -1,16 +1,22 @@
 package com.curso.springboot.backend.apirest.controller;
 
+
 import com.curso.springboot.backend.apirest.model.Cliente;
 import com.curso.springboot.backend.apirest.service.IClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @CrossOrigin(origins = {"http://localhost:4200"})
@@ -51,17 +57,26 @@ public class ClienteRestController {
 
 
     @PostMapping("/clientes") //POST,crea un nuevo cliente, retorna el objeto creado.
-    public ResponseEntity<?> create(@RequestBody Cliente cliente){  //se usa el @RequestBody porque viene en formato json dentro del cuerpo del request, entonces con requestBody spring mapea los datos al objeto cliente
+    public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente, BindingResult result){  //se usa el @RequestBody porque viene en formato json dentro del cuerpo del request, entonces con requestBody spring mapea los datos al objeto cliente
 
         Cliente cliente1=null;
         Map<String, Object> response = new HashMap<>();
+
+        if(result.hasErrors()){
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(err -> "El campo: '" + err.getField() + "' " + err.getDefaultMessage())
+                    .collect(Collectors.toList());
+            response.put("errors",errors);
+            return new ResponseEntity<Map<String, Object>>(response,HttpStatus.BAD_REQUEST);
+        }
+
         try {
             cliente1= clienteService.save(cliente);
 
         }catch(DataAccessException e) {
             response.put("mensaje","Error al realizar el insert en la base de datos");
             response.put("error",e.getMessage()+": "+e.getMostSpecificCause().getMessage());
-            return new ResponseEntity<Map<String, Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         response.put("mensaje","El cliente a sido creado con éxito!");
         response.put("cliente",cliente1);
@@ -70,11 +85,21 @@ public class ClienteRestController {
 
 
     @PutMapping("/clientes/{id}") //PUT, se actualiza el cliente, retorna el cliente actualizado.
-    public ResponseEntity<?> update(@RequestBody Cliente cliente,@PathVariable Long id){
+    public ResponseEntity<?> update(@Valid @RequestBody Cliente cliente,BindingResult result,@PathVariable Long id){
 
         Cliente clienteActual = clienteService.findById(id); //se modifica al cliente actual con los datos del cliente que se trajo como parametro
         Cliente clienteUpdated = null;
         Map<String, Object> response = new HashMap<>();
+
+        if(result.hasErrors()){
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(err -> "El campo: '" + err.getField() + "' " + err.getDefaultMessage())
+                    .collect(Collectors.toList());
+            response.put("errors",errors);
+            return new ResponseEntity<Map<String, Object>>(response,HttpStatus.BAD_REQUEST);
+        }
+
 
         if(clienteActual == null){ //si el cliente es nulo se devuelve un mensaje de error
             response.put("mensaje","Error, no se pudo editar,el cliente ID: "+ id.toString()+ " no existe en la base de datos!");
@@ -98,6 +123,8 @@ public class ClienteRestController {
         response.put("cliente",clienteUpdated);
         return new ResponseEntity<Map<String, Object>>(response,HttpStatus.CREATED); //se retorna un 201 (creado)
     }
+
+
 
     @DeleteMapping("/clientes/{id}") //DELETE, se elimina el cliente de la bd por el id.
    //se retorna un 204 (no content)
